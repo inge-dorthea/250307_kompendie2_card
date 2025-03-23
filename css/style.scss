@@ -115,6 +115,24 @@ body {
   font-weight: bold;
 
   transform: rotate(-8deg);
+
+  #infochild {
+    font-size: 2.6rem;
+    display: grid;
+    grid-auto-flow: row;
+
+    #strength {
+      text-align: center;
+      background-color: rgb(227, 42, 54);
+      margin: 0; /* added due to change from div to p */
+    }
+
+    #lives{
+      text-align: center;
+      background-color: rgb(21, 174, 1);
+      margin: 0; /* added due to change from div to p */
+    }
+  }
 }
 /* #endregion CARD CONTENT */
 

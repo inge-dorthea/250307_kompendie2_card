@@ -1,9 +1,21 @@
+// i kompendiet står der at koden kan optimeres 
+// ved at flytte navigationen/menuen til sin egen klasse
+// og ved at flytte indholdet fra modal eventlisteneren til sin egen klasse
+// men det har jeg valgt ikke at gøre, fordi jeg er doven
+// i get the point though
+
+import gsap from "gsap";
+import ChangeContents from "./ChangeContents";
+
 class ShowActor {
   constructor(data) {
     // tjekker om dataObject-dataen bliver sendt fra app.js
     console.log(data);
 
     /* #region  NAVIGATION */
+    // calling the ChangeContents-class
+    const CC = new ChangeContents();
+
     // creating the nav-element with the id #nav
     const navigation = document.createElement("nav");
     navigation.id = "nav";
@@ -35,6 +47,13 @@ class ShowActor {
       listItem.setAttribute("data-index", `${index}`);
 
       unorderedList.appendChild(listItem);
+
+      // an eventlistener which calls the function which changes the data
+      // e = event = eventhandler objekter = man sender eventen med (den hed e i kompendiet)
+      // item = data
+      listItem.addEventListener("click", (event) =>
+        CC.changeContent(event, item)
+      );
     }); // END data.forEach
     /* #endregion NAVIGATION */
 
@@ -65,11 +84,51 @@ class ShowActor {
     // adding an image to the imageContent-div
     // the image will depend on the dataObject-data, but I didn't add that yet
     const Image = document.createElement("img");
-    Image.id = Image;
+    Image.id = "Image";
     // jeg tænker at src senere bliver gjort dynamisk
     Image.src = "../assets/ninja.png";
     // put the img-tag inside the imageContent-div
     document.querySelector("#imageContent").appendChild(Image);
+
+    // MODAL
+    // TODO: consider changing from div to article and p-tags
+    /* #region  MODAL */
+    // creating a child-div for the #info-div
+    const infoChild = document.createElement("article");
+    infoChild.id = "infochild";
+    document.querySelector("#info").appendChild(infoChild);
+
+    // creating two child-divs for #infochild
+    const strength = document.createElement("p"); // to display info about the card-character's strength
+    strength.id = "strength";
+    infoChild.appendChild(strength);
+
+    const lives = document.createElement("p"); // to display the card-character's lives
+    lives.id = "lives";
+    infoChild.appendChild(lives);
+
+    // eventlistener on card that will make modal show up when card is clicked
+    cardDiv.addEventListener("click", (event) => {
+      // if you are not on the default card the modal will show
+      if (CC.currentIndex > -1) {
+        document.querySelector("#info").style.display = "block";
+      }
+
+      // gsap animation to make it look cool when the modal appears
+      gsap.to("#info", {
+        duration: 0.05,
+        rotate: 10,
+        scale: 1.3,
+        repeat: 3,
+        transformOrigin: "center",
+        yoyo: true,
+      });
+
+      // adding information to the modal
+      strength.textContent = data[CC.currentDataIndex].information.strength;
+      lives.textContent = data[CC.currentDataIndex].information.lives;
+    }); // END eventlistener
+    /* #endregion MODAL */
     /* #endregion CARD */
 
     /* #region  FOOTER */
